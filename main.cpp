@@ -1,34 +1,8 @@
-/*#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <fstream>
-using namespace std;
-
-
-
-int main() {
-    // Empty vector holding all names from file
-    vector<string> names;
-
-    // Read names from file LineUp.txt
-    ofstream theFile("text.txt", ios::app);
-    theFile.close();
-    ifstream in("text.txt");
-    if(!in.is_open())
-        cout << "Unable to open file\n";
-
-    // this is wrong, by the way: while(in.good()){
-    string word;
-    while(getline(in, word))
-            names.push_back(word);
-
-    sort(names.begin(), names.end());
-
-    // Loop to print names
-    for (size_t i = 0; i < names.size(); i++)
-        cout << names[i] << '\n';
-}*/
 #include<iostream>
 #include<fstream>
 #include <string>
@@ -41,11 +15,13 @@ class Contact
 private:
     char firstName[20];
     char lastName[20];
-    long  PhoneNumber;
+    long PhoneNumber;
     bool isInFavorite = false;
     bool isBlocked = false;
     int temp;
 public:
+    void clearScreen();
+    void splashScreen();
     void insertFirst(int);
     void insertLast(int);
     void editPhoneNumber(string,bool);
@@ -53,12 +29,10 @@ public:
     void display(bool, bool);
     void displayName(string);
     void displayPhoneNumber(long);
-    void sort();
+    void sortA_Z();
     void block(int id);
-    void splashScreen();
     int  search(string);
     int  searchPhoneNumber(long);
-    void clearScreen();
 };
 
 Contact contact;
@@ -109,9 +83,11 @@ void Contact::insertLast(int numRec)
         {
             contact.isInFavorite = false;
         }
+        contact.isBlocked =false;
+        contact.isBlocked =false;
         cout<<"\n\t---------------------------------------"<<endl;
         //assign object value to txt file
-        theFile << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        theFile << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
 
         n++;
     }
@@ -123,7 +99,7 @@ void Contact::insertLast(int numRec)
 
 void Contact::insertFirst(int numRec)
 {
-    ifstream OldRecord("Records.txt");
+    ifstream file ("Records.txt");
     ofstream Temp("temp.txt");
     cout<<"\n\t---------------------------------------"<<endl;
     int n = 1;
@@ -150,21 +126,22 @@ void Contact::insertFirst(int numRec)
         {
             contact.isInFavorite = false;
         }
+        contact.isBlocked = false;
         cout<<"\n\t---------------------------------------"<<endl;
         //assign object value to txt file
-        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
 
         n++;
     }
 
     cout<<"\n\t---------------------------------------"<<endl;
-    while(OldRecord >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
-        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
     }
 
-    OldRecord.close();
     Temp.close();
+    file.close();
     remove("Records.txt");
     rename("temp.txt","Records.txt");
     contact.clearScreen();
@@ -176,78 +153,83 @@ void Contact::insertFirst(int numRec)
 
 void Contact::editPhoneNumber(string k, bool block)
 {
-    ifstream OldRecord("Records.txt");
     ofstream Temp("temp.txt");
+    ifstream file ("Records.txt");
     cout<<"\n\t---------------------------------------"<<endl;
-    while(OldRecord >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
 
-        if(!block){
-          if(contact.firstName == k)
+        if(!block)
         {
-            contact.clearScreen();
-            cout<<"\n\t EDIT CONTACT"<<endl;
-            cout<<"\n\t---------------------------------------"<<endl;
-            cout<<"\n\t\t Enter First Name: ";
-            cin>>contact.firstName;
-            cout<<"\n\t\t Enter Last Name: ";
-            cin>>contact.lastName;
-            cout<<"\n\t\t Enter Your Number: ";
-            cin>>contact.PhoneNumber;
-            cout<<"\n\t\t Do you wann enter to Favorite [press 1 else 0]: ";
-            cin>>contact.temp;
-            if(contact.temp == 1)
+            if(contact.firstName == k)
             {
-                contact.isInFavorite = true;
+                contact.clearScreen();
+                cout<<"\n\t EDIT CONTACT"<<endl;
+                cout<<"\n\t---------------------------------------"<<endl;
+                cout<<"\n\t\t Enter First Name: ";
+                cin>>contact.firstName;
+                cout<<"\n\t\t Enter Last Name: ";
+                cin>>contact.lastName;
+                cout<<"\n\t\t Enter Your Number: ";
+                cin>>contact.PhoneNumber;
+                cout<<"\n\t\t Do you wann enter to Favorite [press 1 else 0]: ";
+                cin>>contact.temp;
+                if(contact.temp == 1)
+                {
+                    contact.isInFavorite = true;
+                }
+                else
+                {
+                    contact.isInFavorite = false;
+                }
             }
-            else
+            else if(contact.lastName == k)
             {
-                contact.isInFavorite = false;
+                contact.clearScreen();
+                cout<<"\n\t ADDING NEW CONTACT"<<endl;
+                cout<<"\n\t---------------------------------------"<<endl;
+                cout<<"\n\t\t Enter First Name: ";
+                cin>>contact.firstName;
+                cout<<"\n\t\t Enter Last Name: ";
+                cin>>contact.lastName;
+                cout<<"\n\t\t Enter Your Number: ";
+                cin>>contact.PhoneNumber;
+                cout<<"\n\t\t Do you wann enter to Favorite [press 1 else 0]: ";
+                cin>>contact.temp;
+                if(contact.temp == 1)
+                {
+                    contact.isInFavorite = true;
+                }
+                else
+                {
+                    contact.isInFavorite = false;
+                }
             }
-        } else if(contact.lastName == k)
-        {
-            contact.clearScreen();
-            cout<<"\n\t ADDING NEW CONTACT"<<endl;
-            cout<<"\n\t---------------------------------------"<<endl;
-            cout<<"\n\t\t Enter First Name: ";
-            cin>>contact.firstName;
-            cout<<"\n\t\t Enter Last Name: ";
-            cin>>contact.lastName;
-            cout<<"\n\t\t Enter Your Number: ";
-            cin>>contact.PhoneNumber;
-            cout<<"\n\t\t Do you wann enter to Favorite [press 1 else 0]: ";
-            cin>>contact.temp;
-            if(contact.temp == 1)
-            {
-                contact.isInFavorite = true;
-            }
-            else
-            {
-                contact.isInFavorite = false;
-            }
-        }
 
         }
         else
         {
-                contact.isBlocked = true;
+            contact.isBlocked = true;
         }
-        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
     }
-    OldRecord.close();
     Temp.close();
+    file.close();
     remove("Records.txt");
     rename("temp.txt","Records.txt");
     contact.clearScreen();
 
-    if(!block){
-    cout<<"\n\t---------------------------------------"<<endl;
-    cout<<"\n\t Contact successfully edited!"<<endl;
-    cout<<"\n\t---------------------------------------"<<endl;
-    }else{
-    cout<<"\n\t---------------------------------------"<<endl;
-    cout<<"\n\t Contact successfully blocked!"<<endl;
-    cout<<"\n\t---------------------------------------"<<endl;
+    if(!block)
+    {
+        cout<<"\n\t---------------------------------------"<<endl;
+        cout<<"\n\t Contact successfully edited!"<<endl;
+        cout<<"\n\t---------------------------------------"<<endl;
+    }
+    else
+    {
+        cout<<"\n\t---------------------------------------"<<endl;
+        cout<<"\n\t Contact successfully blocked!"<<endl;
+        cout<<"\n\t---------------------------------------"<<endl;
     }
 
 
@@ -257,22 +239,21 @@ void Contact::editPhoneNumber(string k, bool block)
 
 void Contact::deletePhoneNumber(string key)
 {
-//first search id m and delete from Record Array
-    ifstream OldRecord("Records.txt");
+    ifstream file ("Records.txt");
     ofstream Temp("temp.txt");
     cout<<"\n\t---------------------------------------"<<endl;
-    while(OldRecord >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
         if(contact.firstName == key);
         else if(contact.lastName == key);
         else
         {
-            Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<endl;
+            Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
         }
 
     }
-    OldRecord.close();
     Temp.close();
+    file.close();
     remove("Records.txt");
     rename("temp.txt","Records.txt");
     contact.clearScreen();
@@ -285,93 +266,134 @@ void Contact::deletePhoneNumber(string key)
 
 void Contact::display(bool blocked, bool favorite)
 {
-//display name, id, sex and age
-    ifstream theFile("Records.txt");
     cout<<"\n\tALL Contacts"<<endl;
     cout<<"\n\t---------------------------------------"<<endl;
     int n=0;
+    ifstream file ("Records.txt");
 
     //check if the file is empty
 
     cout <<"\n\tNo    FullName     phonenumber "<<endl;
-    while(theFile >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
     {
-        if(blocked){
-          if(contact.isBlocked == 1)
-           cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
-        } else if(favorite){
-          if(contact.isInFavorite == 1)
-           cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
-        }else if(!blocked && !favorite){
-           cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        if(blocked)
+        {
+            if(contact.isBlocked == 1)
+                cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        }
+        else if(favorite)
+        {
+            if(contact.isInFavorite == 1)
+                cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
+        }
+        else if(!blocked && !favorite)
+        {
+            cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName<<" "<<contact.PhoneNumber<<endl;
         }
 
     }
     cout<<"\n\t---------------------------------------"<<endl;
 
-
+    file.close();
 }
 
 
 void Contact::displayName(string key)
 {
+    ifstream file ("Records.txt");
+
     int n = 0;
-    ifstream theFile("Records.txt");
     cout<<"\n\t---------------------------------------"<<endl;
     cout <<"\n\tNo    FullName      phonenumber  "<<endl;
-    while(theFile >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
     {
         string phoneNumber = to_string(contact.PhoneNumber);
         if(contact.firstName == key || contact.lastName == key)
             cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName <<"     "<<contact.PhoneNumber<<endl;
     }
     cout<<"\n\t---------------------------------------"<<endl;
+    file.close();
 }
-void Contact::displayPhoneNumber(long phonenumber){
+void Contact::displayPhoneNumber(long phonenumber)
+{
     int n = 0;
-    ifstream theFile("Records.txt");
+    ifstream file ("Records.txt");
     cout<<"\n\t---------------------------------------"<<endl;
     cout <<"\n\tNo    FullName     phonenumber  "<<endl;
-    while(theFile >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite)
     {
-        if(contact.PhoneNumber == phonenumber){
-              cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName <<"     "<<contact.PhoneNumber<<endl;
-
+        if(contact.PhoneNumber == phonenumber)
+        {
+            cout <<"\n\t"<<++n<<". "<< contact.firstName <<" "<< contact.lastName <<"     "<<contact.PhoneNumber<<endl;
+            break;
         }
 
     }
     cout<<"\n\t---------------------------------------"<<endl;
+    file.close();
 }
 int Contact::search(string k)
 {
-//compare id with k and return 1 if the same else 0
-    ifstream theFile("Records.txt");
-    while(theFile >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
+    ifstream file ("Records.txt");
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
         if(contact.firstName == k)
         {
             return 1;
+            break;
         }
         else if(contact.lastName == k)
         {
             return 1;
+            break;
         }
     }
     return 0;
 }
 
 
-int Contact::searchPhoneNumber(long phonenumber){
-    ifstream theFile("Records.txt");
-    while(theFile >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
+int Contact::searchPhoneNumber(long phonenumber)
+{
+    ifstream file ("Records.txt");
+    while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
         if(contact.PhoneNumber == phonenumber)
         {
             return 1;
+            break;
         }
     }
     return 0;
 }
+void Contact::sortA_Z()
+{
+    // Empty vector holding all names from file
+    vector<string> names;
+    ifstream file ("Records.txt");
+    ofstream temp("temp.txt");
+    if(!file.is_open())
+        cout << "Unable to open file\n";
+
+    // this is wrong, by the way: while(in.good()){
+    string word;
+    while(getline(file, word))
+        names.push_back(word);
+
+    sort(names.begin(), names.end());
+
+    for (size_t i = 0; i < names.size(); i++)
+        temp << names[i] <<endl;
+    file.close();
+    temp.close();
+    remove("Records.txt");
+    rename("temp.txt","Records.txt");
+
+
+    cout<<"\n\t---------------------------------------"<<endl;
+    cout<<"\n\t Record successfully sorted!"<<endl;
+    cout<<"\n\t---------------------------------------"<<endl;
+}
+
 
 int main()
 {
@@ -403,7 +425,6 @@ int main()
         cout<<"\n\t\t9-SearchbyPhonenumber"<<endl;
         cout<<"\n\t\t10-Sort[a-z]"<<endl;
         cout<<"\n\t\t11-Block Phonenumber"<<endl;
-        cout<<"\n\t\t12-Favorite Phonenumber"<<endl;
         cout<<"\n\t\t0-EXIT"<<endl;
         cout<<"\n\t---------------------------------------";
         cout<<"\n\t\tEnter Your choice:";
@@ -414,15 +435,19 @@ int main()
             cout<<"\n\t\tEnter Number of Records: ";
             cin>>numRec;
             contact.insertFirst(numRec);
-        }else if(choice == 2){
+        }
+        else if(choice == 2)
+        {
             contact.clearScreen();
             cout<<"\n\t\tEnter Number of Records: ";
             cin>>numRec;
             contact.insertLast(numRec);
-        }else if(choice == 3){
+        }
+        else if(choice == 3)
+        {
             contact.clearScreen();
             reopenCounter = 0;
-            reenter1:
+reenter1:
             cout<<"\n\t\tEnter first name(last name) to edit contact: ";
             cin>>key_;
             if(contact.search(key_) == 1)
@@ -444,10 +469,12 @@ int main()
                 }
             }
 
-        }else if(choice == 4){
+        }
+        else if(choice == 4)
+        {
             contact.clearScreen();
             reopenCounter = 0;
-            reenter2:
+reenter2:
 
             cout<<"\n\t\tEnter first name or last name to delete contact: ";
             cin>>key_;
@@ -470,20 +497,27 @@ int main()
                 }
             }
 
-        } else if(choice == 5){
-           contact.clearScreen();
-           contact.display(false, false);
-        }else if(choice == 6){
-           contact.clearScreen();
-           contact.display(true, false);
-        } else if(choice == 7){
-           contact.clearScreen();
-           contact.display(false,true);
-        } else if(choice==8)
+        }
+        else if(choice == 5)
+        {
+            contact.clearScreen();
+            contact.display(false, false);
+        }
+        else if(choice == 6)
+        {
+            contact.clearScreen();
+            contact.display(true, false);
+        }
+        else if(choice == 7)
+        {
+            contact.clearScreen();
+            contact.display(false,true);
+        }
+        else if(choice==8)
         {
             contact.clearScreen();
             reopenCounter = 0;
-            reenter:
+reenter:
             cout<<"\n\t\tEnter first name or last name to search contact: ";
             cin>>key_;
             if(contact.search(key_) == 1)
@@ -512,7 +546,7 @@ int main()
         {
             contact.clearScreen();
             reopenCounter = 0;
-            reenter4:
+reenter4:
             cout<<"\n\t\tEnter first phonenumber to search contact: ";
             cin>>_key_;
             if(contact.searchPhoneNumber(_key_) == 1)
@@ -535,14 +569,18 @@ int main()
 
             }
 
-        } else if(choice==10)
+        }
+        else if(choice==10)
         {
             contact.clearScreen();
+            contact.sortA_Z();
 
-        } else if(choice == 11){
+        }
+        else if(choice == 11)
+        {
             contact.clearScreen();
             reopenCounter = 0;
-            reenter5:
+reenter5:
             cout<<"\n\t\tEnter first name to block contact: ";
             cin>>key_;
             if(contact.search(key_) == 1)
@@ -565,7 +603,36 @@ int main()
 
             }
 
-        } else if(choice==0);
+        }
+        else if(choice == 12)
+        {
+            contact.clearScreen();
+            reopenCounter = 0;
+reenter6:
+            cout<<"\n\t\tEnter first name to add Favorite contact: ";
+            cin>>key_;
+            if(contact.search(key_) == 1)
+            {
+                contact.editPhoneNumber(key_,true);
+            }
+            else
+            {
+                cout<<"\n\t\tNo Result! Try Again."<<endl;
+                reopenCounter++;
+                if(reopenCounter < 2)
+                {
+                    goto reenter6;
+                }
+                else
+                {
+                    cout<<"\n\t\tTime Out! Try Again later."<<endl;
+
+                }
+
+            }
+
+        }
+        else if(choice==0);
         else
         {
             system("clear");
