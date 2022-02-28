@@ -84,7 +84,6 @@ void Contact::insertLast(int numRec)
             contact.isInFavorite = false;
         }
         contact.isBlocked =false;
-        contact.isBlocked =false;
         cout<<"\n\t---------------------------------------"<<endl;
         //assign object value to txt file
         theFile << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
@@ -161,32 +160,10 @@ void Contact::editPhoneNumber(string k, bool block)
 
         if(!block)
         {
-            if(contact.firstName == k)
+            if(contact.firstName == k || contact.lastName == k)
             {
                 contact.clearScreen();
                 cout<<"\n\t EDIT CONTACT"<<endl;
-                cout<<"\n\t---------------------------------------"<<endl;
-                cout<<"\n\t\t Enter First Name: ";
-                cin>>contact.firstName;
-                cout<<"\n\t\t Enter Last Name: ";
-                cin>>contact.lastName;
-                cout<<"\n\t\t Enter Your Number: ";
-                cin>>contact.PhoneNumber;
-                cout<<"\n\t\t Do you wann enter to Favorite [press 1 else 0]: ";
-                cin>>contact.temp;
-                if(contact.temp == 1)
-                {
-                    contact.isInFavorite = true;
-                }
-                else
-                {
-                    contact.isInFavorite = false;
-                }
-            }
-            else if(contact.lastName == k)
-            {
-                contact.clearScreen();
-                cout<<"\n\t ADDING NEW CONTACT"<<endl;
                 cout<<"\n\t---------------------------------------"<<endl;
                 cout<<"\n\t\t Enter First Name: ";
                 cin>>contact.firstName;
@@ -244,8 +221,7 @@ void Contact::deletePhoneNumber(string key)
     cout<<"\n\t---------------------------------------"<<endl;
     while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
-        if(contact.firstName == key);
-        else if(contact.lastName == key);
+        if(contact.lastName == key || contact.firstName == key);
         else
         {
             Temp << contact.firstName <<" "<<contact.lastName<<" "<<contact.PhoneNumber<<" "<<contact.isBlocked<<" "<<contact.isInFavorite<<endl;
@@ -337,12 +313,7 @@ int Contact::search(string k)
     ifstream file ("Records.txt");
     while(file >> contact.firstName>>contact.lastName>>contact.PhoneNumber>>contact.isBlocked>>contact.isInFavorite )
     {
-        if(contact.firstName == k)
-        {
-            return 1;
-            break;
-        }
-        else if(contact.lastName == k)
+        if(contact.firstName == k || contact.lastName == k)
         {
             return 1;
             break;
